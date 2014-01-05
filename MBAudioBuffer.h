@@ -30,12 +30,12 @@ public:
 	MBAudioBuffer(int sz, int sRate);
 	~MBAudioBuffer(); 
 	
-	addData(const long& data);
-	addData(const float& data);
+	void addData(const long& data);
+	void addData(const float& data);
 	
-	int32 convertFloatToLong(float a);
+	long convertFloatToLong(float a);
 	
-	initZeroBuffer();
+	void initZeroBuffer();
 	
-	getChunck(int chunkSize);
+	long& getChunck(int chunkSize);
 }

@@ -43,18 +43,18 @@ MBAudioBuffer::~MBAudioBuffer
 	free(this->buffer);
 }
 
-MBAudioBuffer::initZeroBuffer()
+void MBAudioBuffer::initZeroBuffer()
 {
 	for(int i=0; i < this->size; ++i)
 		this->buffer[i] = 0;
 }
 
-int32 MBAudioBuffer::convertFloatToLong(const float a)
+long MBAudioBuffer::convertFloatToLong(const float a)
 {
 	return (long)a * 100000000;
 }
 
-MBAudioBuffer::addData(const long& data)
+void MBAudioBuffer::addData(const long& data)
 {
 	if((this->idx + 1) < this->size)
 	{
@@ -63,7 +63,7 @@ MBAudioBuffer::addData(const long& data)
 	}
 }
 
-MBAudioBuffer::addData(const float& data)
+void MBAudioBuffer::addData(const float& data)
 {
 	if((this->idx + 1) < this->size)
 	{
