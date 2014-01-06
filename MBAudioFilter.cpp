@@ -46,7 +46,7 @@ void MBAudioFilter::initLowPassResonance()
 	this->temps[2] = 0;
 }
 
-long MBAudioFilter::lowPassResonance(const double data)
+double MBAudioFilter::lowPassResonance(const double data)
 {
 	assert(this->temps[0] == NULL);
 	this->temps[1] += (data - this->temps[2]) * this->temps[0];
@@ -65,7 +65,7 @@ void MBAudioFilter::initNotch()
 	this->temps[4] = -this->resonance * this->resonance;
 }
 
-long MBAudioFilter::notch(const double& data)
+double MBAudioFilter::notch(const double& data)
 {
 	long y;
 	this->miniBuffer[0] = data;

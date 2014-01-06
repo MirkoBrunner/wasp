@@ -16,7 +16,7 @@ public:
 
 	MBAudioBuffer *buffer;
 	
-	long *miniBuffer;
+	double *miniBuffer;
 	int sampleRate;
 	float cutOff;
 	float resonance;
@@ -30,11 +30,11 @@ public:
 	long simpleLowPass(const double& data);
 	
 	void initLowPassResonance();
-	long lowPassResonance(const double& data);
+	double lowPassResonance(const double& data);
 	
 	
 	void initNotch
-	long notch(const double& data);
+	double notch(const double& data);
 	
 }
 
