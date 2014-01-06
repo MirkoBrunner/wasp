@@ -18,16 +18,23 @@ public:
 	
 	long *miniBuffer;
 	int sampleRate;
-	int cutOff;
+	float cutOff;
+	float resonance;
 	
+	//temporary helper
+	double *temps;
 	
-	//configure filter 
-	void configureFilter(const int sRate, const int bufferSize);
-
+	void build();
 	
 	//simplest lowpass filter ever ;)
-	long simpleLowPass(const long data, const long& cutoff);
+	long simpleLowPass(const double& data);
 	
+	void initLowPassResonance();
+	long lowPassResonance(const double& data);
+	
+	
+	void initNotch
+	long notch(const double& data);
 	
 }
 

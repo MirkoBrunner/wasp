@@ -22,9 +22,9 @@ MBAudioBuffer:MBAudioBuffer(const MBAudioBuffer& a)
 	if(this->buffer!=NULL) 
 		free(this->buffer);
 		
-	this->buffer = new int32[this->size];
+	this->buffer = new double[this->size];
 	
-	for(int i=0; i < this->size; ++i)
+	for(int i=0; i < this->size; i++)
 	{
 		this->buffer[i] = a->buffer[i];
 	}
@@ -36,8 +36,8 @@ MBAudioBuffer::MBAudioBuffer(int sz, int sRate)
 	this->idx = 0;
 	this->sampleRate = sRate;
 	this->size = this->sampleRate;
-	this->buffer = new int32[this->size];
-	this->initZeroBuffer();
+	this->buffer = new double[this->size];
+	this->initBufferWithZero();
 }
 
 MBAudioBuffer::~MBAudioBuffer
@@ -57,7 +57,7 @@ void MBAudioBuffer::setSampleRata(const int sRate)
 	this->sampleRate = sRate;
 }
 
-void MBAudioBuffer::initZeroBuffer()
+void MBAudioBuffer::initBufferWithZero()
 {
 	for(int i=0; i < this->size; ++i)
 		this->buffer[i] = 0;
@@ -68,22 +68,13 @@ long MBAudioBuffer::convertFloatToLong(const float a)
 	return (long)a * 100000000;
 }
 
-void MBAudioBuffer::addData(const long& data)
+void MBAudioBuffer::addData(const double& data)
 {
-	if((this->idx + 1) < this->size)
-	{
-		this->buffer[this->idx+1] = data;
-		this->idx++;
-	}
+	if((this->idx + 1) >= this->size)
+		this->idx = 0;
+		
+	this->buffer[this->idx+1] = data;
+	
+	this->idx++;
 }
 
-void MBAudioBuffer::addData(const float& data)
-{
-	if((this->idx + 1) < this->size)
-	{
-		this->buffer[this->idx+1] = this->convertFloatToLong(data);
-		this->idx++;
-	}
-}
-
-M

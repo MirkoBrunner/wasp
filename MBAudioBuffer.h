@@ -10,7 +10,7 @@ class MBAudioBuffer
 private:
 	int size;
 	int sampleRate;
-	long *buffer
+	double *buffer
 	int idx;
 	
 public:	
@@ -22,12 +22,9 @@ public:
 	void setSize(const int size);
 	void setSampleRata(const int sRate);
 	
-	void addData(const long& data);
-	void addData(const float& data);
+	void addData(const double& data);
 	
-	long convertFloatToLong(float a);
-	
-	void initZeroBuffer();
+	void initBufferWithZero();
 	
 	long& getChunck(int chunkSize);
 }
