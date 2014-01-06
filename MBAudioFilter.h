@@ -17,7 +17,7 @@ public:
 	MBAudioBuffer *buffer;
 	
 	double *miniBuffer;
-	int sampleRate;
+	int s;
 	float cutOff;
 	float resonance;
 	
@@ -29,10 +29,16 @@ public:
 	//simplest lowpass filter ever ;)
 	long simpleLowPass(const double& data);
 	
+	//lowpass 1p 
 	void initLowPassResonance();
 	double lowPassResonance(const double& data);
 	
+	//lowpass v2
+	// amp magnitude at the resonation frequency
+	void initLowPassResonance2(const double amp);
+	double lowPassResonance2(const double& data);
 	
+	//notch
 	void initNotch
 	double notch(const double& data);
 	
