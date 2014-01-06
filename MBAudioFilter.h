@@ -13,11 +13,13 @@ class MBAudioFilterLo
 public:
 	MBAudioFilter();
 	~MBAudioFilter(); 
+	
+	MBAudioFilter(const MBAudioFilter& a);
 
 	MBAudioBuffer *buffer;
 	
 	double *miniBuffer;
-	int s;
+	int filterType;
 	float cutOff;
 	float resonance;
 	
@@ -38,9 +40,22 @@ public:
 	void initLowPassResonance2(const double amp);
 	double lowPassResonance2(const double& data);
 	
+	//high 
+	void initSinpleHighPass();
+	void simpleHighPass(const double& data);
+	
 	//notch
 	void initNotch
 	double notch(const double& data);
+	
+	//fast bandpass
+	void initFBandPass();
+	double fBandPass(const double& data);
+	
+	//dc removal
+	void initDCRemoval();
+	double dCRemoval(const double& data);
+	
 	
 }
 

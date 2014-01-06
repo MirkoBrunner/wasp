@@ -11,7 +11,6 @@ private:
 	int size;
 	int sampleRate;
 	double *buffer
-	int idx;
 	
 public:	
 	MBAudioBuffer(); 

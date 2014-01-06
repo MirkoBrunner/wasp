@@ -6,7 +6,6 @@
 
 MBAudioBuffer::MBAudioBuffer()
 {
-	this->idx = 0;
 	this->size = 0;
 	this->sampleRate = 0;
 	this->buffer = NULL;
@@ -15,7 +14,6 @@ MBAudioBuffer::MBAudioBuffer()
 //copy constuctor
 MBAudioBuffer:MBAudioBuffer(const MBAudioBuffer& a)
 {
-	this->idx = a->idx;
 	this->size = a->size;
 	this->sampleRate = a->sampleRate;
 	
@@ -33,7 +31,6 @@ MBAudioBuffer:MBAudioBuffer(const MBAudioBuffer& a)
 MBAudioBuffer::MBAudioBuffer(int sz, int sRate)
 : MBAudioBuffer()
 {
-	this->idx = 0;
 	this->sampleRate = sRate;
 	this->size = this->sampleRate;
 	this->buffer = new double[this->size];
@@ -69,12 +66,11 @@ long MBAudioBuffer::convertFloatToLong(const float a)
 }
 
 void MBAudioBuffer::addData(const double& data)
-{
-	if((this->idx + 1) >= this->size)
-		this->idx = 0;
-		
-	this->buffer[this->idx+1] = data;
+{		
+	this->buffer[0] = data;
 	
-	this->idx++;
+	//array shift
+	for(int i = 1; i != this->size-1; i++)
+		this->buffer[i] = this->buffer[i+1];
 }
 
