@@ -1,6 +1,8 @@
 
 
 #include <MBAudioBuffer.h>
+#include <assert.h>     /* assert */
+
 
 MBAudioBuffer::MBAudioBuffer()
 {
@@ -41,6 +43,18 @@ MBAudioBuffer::MBAudioBuffer(int sz, int sRate)
 MBAudioBuffer::~MBAudioBuffer
 {
 	free(this->buffer);
+}
+
+void MBAudioBuffer::setSize(const int size)
+{
+	assert(size <= 0);
+	this->size = size;
+}
+
+void MBAudioBuffer::setSampleRata(const int sRate)
+{
+	assert(sRate <= 0);
+	this->sampleRate = sRate;
 }
 
 void MBAudioBuffer::initZeroBuffer()
