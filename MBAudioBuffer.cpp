@@ -1,6 +1,6 @@
 
 
-#include <MBAudioBuffer.h>
+#include "MBAudioBuffer.h"
 #include <assert.h>     /* assert */
 
 
@@ -12,24 +12,24 @@ MBAudioBuffer::MBAudioBuffer()
 }
 
 //copy constuctor
-MBAudioBuffer:MBAudioBuffer(const MBAudioBuffer& a)
+MBAudioBuffer::MBAudioBuffer(const MBAudioBuffer& a)
 {
-	this->size = a->size;
-	this->sampleRate = a->sampleRate;
+	this->size = a.size;
+	this->sampleRate = a.sampleRate;
 	
-	if(this->buffer!=NULL) 
+	if(this->buffer!=NULL)
 		free(this->buffer);
 		
 	this->buffer = new double[this->size];
 	
 	for(int i=0; i < this->size; i++)
 	{
-		this->buffer[i] = a->buffer[i];
+		this->buffer[i] = a.buffer[i];
 	}
 }
 
 MBAudioBuffer::MBAudioBuffer(int sz, int sRate)
-: MBAudioBuffer()
+//: MBAudioBuffer()
 {
 	this->sampleRate = sRate;
 	this->size = this->sampleRate;
@@ -37,7 +37,7 @@ MBAudioBuffer::MBAudioBuffer(int sz, int sRate)
 	this->initBufferWithZero();
 }
 
-MBAudioBuffer::~MBAudioBuffer
+MBAudioBuffer::~MBAudioBuffer()
 {
 	free(this->buffer);
 }
@@ -60,10 +60,6 @@ void MBAudioBuffer::initBufferWithZero()
 		this->buffer[i] = 0;
 }
 
-long MBAudioBuffer::convertFloatToLong(const float a)
-{
-	return (long)a * 100000000;
-}
 
 void MBAudioBuffer::addData(const double& data)
 {		
