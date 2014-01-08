@@ -1,4 +1,3 @@
-
 /*
 MBAudioBuffer
 
@@ -7,12 +6,12 @@ Speichert den Audiostream zwischen.
 */
 class MBAudioBuffer
 {
-private:
+public:	
 	int size;
 	int sampleRate;
-	double *buffer
+	double *buffer;
 	
-public:	
+
 	MBAudioBuffer(); 
 	MBAudioBuffer(const MBAudioBuffer& a); 
 	MBAudioBuffer(int sz, int sRate);
