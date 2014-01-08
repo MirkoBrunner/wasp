@@ -1,4 +1,3 @@
-
 /*
 MBAudioFilter
 
@@ -8,7 +7,7 @@ Bandpass(1p..4p), Notch(1p..4p), Tiefpass (1p..4p), Hochpass(1p..4p), All-Pass
 Die Filter arbeiten alle Mono, wenn Stereo Streams verwendet werden muss der Filter auf jeden Kanal einzeln angewendet werden.
 
 */
-class MBAudioFilterLo
+class MBAudioFilter
 {
 public:
 	MBAudioFilter();
@@ -22,14 +21,18 @@ public:
 	int filterType;
 	float cutOff;
 	float resonance;
+    int sampleRate;
 	
 	//temporary helper
 	double *temps;
 	
-	void build();
+	void build(const int bufferSize);
 	
+    void resetTemps(const int size);
+    void resetMiniBuffer(const int size);
+    
 	//simplest lowpass filter ever ;)
-	long simpleLowPass(const double& data);
+	double simpleLowPass(const double& data);
 	
 	//lowpass 1p 
 	void initLowPassResonance();
@@ -42,10 +45,10 @@ public:
 	
 	//high 
 	void initSinpleHighPass();
-	void simpleHighPass(const double& data);
+	double simpleHighPass(const double& data);
 	
 	//notch
-	void initNotch
+	void initNotch();
 	double notch(const double& data);
 	
 	//fast bandpass
@@ -55,9 +58,7 @@ public:
 	//dc removal
 	void initDCRemoval();
 	double dCRemoval(const double& data);
-	
-	
-}
+};
 
 
 
