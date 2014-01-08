@@ -1,52 +1,50 @@
 
 
-#include <MBAudioFilter.h>
+#include "MBAudioFilter.h"
 #include <math.h> 
-
-#define M_PI 3.14159265359
 
 
 MBAudioFilter::MBAudioFilter()
 {
 	this->filterType = -1;
-	this->sampleRate = 0;
-	this->a = this->b = this->c = NULL;
+	this->cutOff = 0;
+	this->resonance = 0;
 }
 
 //clean up hurrrrey ;)
-MBaudioFilter::~MBAudioFilter()
+MBAudioFilter::~MBAudioFilter()
 {
 	delete this->buffer;
 }
 
-MBAudioBuffer:MBAudioBuffer(const MBAudioBuffer& a)
+MBAudioFilter::MBAudioFilter(const MBAudioFilter& a)
 {
-	this->cutOff = a->cutOff;
-	this->resonance = a->resonance;
-	this->filterType = a->filterType
+	this->cutOff = a.cutOff;
+	this->resonance = a.resonance;
+	this->filterType = a.filterType;
 	int c;
 	
-	if(a->temps != NULL){
+	if(a.temps != NULL){
 	
-		c = sizeof(a->temps) / sizeof(double);
+		c = sizeof(a.temps) / sizeof(double);
 		
-		this->resetTemps[c];
-		
-		for(int i=0;i<c;i++)
-			this->temps[i] = a->temps[i];
-	}
-	
-	if(a->miniBuffer != NULL){
-	
-		c = sizeof(a->miniBuffer) / sizeof(double);
-		
-		this->resetMiniBuffer[c];
+		//this->resetTemps[c];
 		
 		for(int i=0;i<c;i++)
-			this->temps[i] = a->temps[i];
+			this->temps[i] = a.temps[i];
 	}
 	
-	free(c);
+	if(a.miniBuffer != NULL){
+	
+		c = sizeof(a.miniBuffer) / sizeof(double);
+		
+		this->resetMiniBuffer(c);
+		
+		for(int i=0;i<c;i++)
+			this->temps[i] = a.temps[i];
+	}
+	
+	free(&c);
 }
 
 void MBAudioFilter::build(const int bufferSize)
@@ -80,12 +78,13 @@ void MBAudioFilter::resetMiniBuffer(const int size)
 	this->miniBuffer = new double[size];
 }
 
-long MBAudioFilter::simpleLowPass(const double data)
+double MBAudioFilter::simpleLowPass(const double& data)
 {
-	long y;
+	double y;
 	this->miniBuffer[0] = data;
 	y = this->miniBuffer[1] + this->cutOff * (this->miniBuffer[0] - this->miniBuffer[1]);
 	this->miniBuffer[1] = this->miniBuffer[0];
+    return y;
 }
 
 void MBAudioFilter::initLowPassResonance()
@@ -97,11 +96,10 @@ void MBAudioFilter::initLowPassResonance()
 	this->temps[2] = 0;
 }
 
-double MBAudioFilter::lowPassResonance(const double data)
+double MBAudioFilter::lowPassResonance(const double& data)
 {
-	assert(this->temps[0] == NULL);
 	this->temps[1] += (data - this->temps[2]) * this->temps[0];
-    this->temps[2] += this->temps[1]
+    this->temps[2] += this->temps[1];
     this->temps[1] *= this->resonance;
     return this->temps[2];
 }
@@ -109,16 +107,16 @@ double MBAudioFilter::lowPassResonance(const double data)
 void MBAudioFilter::initLowPassResonance2(const double amp)
 {
 	this->filterType = 2;
-	this->resetTemps[5];
-	this->resetMiniBuffer[1];
+	this->resetTemps(5);
+	this->resetMiniBuffer(1);
 	
 	this->temps[0] = cos(2 * M_PI * this->resonance / this->sampleRate);
 	this->temps[1] = 2-2*this->temps[0];
 
 	//r
-	double a = pow(-(this->temps[0]-1));
+	double a = pow(-(this->temps[0]-1),2);
 	double b = a + amp*this->temps[0];
-	double c = (amp * (this->temps[0]-1);
+	double c = amp * (this->temps[0]-1);
 	
 	this->temps[2] = (sqrt(2)*sqrt(b)) / c;
 	this->temps[3] = 0;
@@ -127,7 +125,7 @@ void MBAudioFilter::initLowPassResonance2(const double amp)
 
 double MBAudioFilter::lowPassResonance2(const double& data)
 {
-	this->temps[4] = this->temps[4] + (data - this->this->temps[3]) * this->temps[2];
+	this->temps[4] = this->temps[4] + (data - this->temps[3]) * this->temps[2];
 	this->temps[3] = this->temps[3] + this->temps[4];
 	this->temps[4] = this->temps[4] * this->temps[2];
 	
@@ -140,7 +138,7 @@ void MBAudioFilter::initNotch()
 	this->resetTemps(6);
 	this->resetMiniBuffer(6);
 
-	this->temps[0] = cos(2 * M_PI * this->cutOff / this->samplRate);
+	this->temps[0] = cos(2 * M_PI * this->cutOff / this->sampleRate);
 	this->temps[1] = pow((1 - this->resonance), 2) / (2 * (this->temps[0] + 1)) + this->resonance;
 	this->temps[2] = -2 * this->temps[0] * this->temps[1];
 	this->temps[3] = 2 * this->temps[0] * this->resonance;
@@ -154,7 +152,7 @@ void MBAudioFilter::initSinpleHighPass()
 }
 
 
-void MBAudioFilter::simpleHighPass(const double& data)
+double MBAudioFilter::simpleHighPass(const double& data)
 {
 	this->miniBuffer[0] = data - (this->miniBuffer[1] + this->cutOff * (data - this->miniBuffer[1]));
 	this->miniBuffer[1] = this->miniBuffer[0];
@@ -185,10 +183,10 @@ void MBAudioFilter::initFBandPass()
 	this->resetTemps(4);
 	this->resetMiniBuffer(3);
 	
-	this->temps[0] = cos(2 * M_PI * this->cutOff / this->samplRate);
+	this->temps[0] = cos(2 * M_PI * this->cutOff / this->sampleRate);
 	this->temps[1] = (1 - this->resonance)*sqrt(this->resonance*(this->resonance-4*pow(this->temps[0],2)+2)+1);
-	this->temps[2] = 2 * this->temps[0] * this->resonace;
-	this->temps[3] = pow(-this->resonace,2);
+	this->temps[2] = 2 * this->temps[0] * this->resonance;
+	this->temps[3] = pow(-this->resonance,2);
 	this->temps[4] = 0;
 }
 
@@ -205,7 +203,7 @@ double MBAudioFilter::fBandPass(const double& data)
 
 void MBAudioFilter::initDCRemoval()
 {
-	this->resetTemps[2];
+	this->resetTemps(2);
 	this->temps[0] = this->temps[1] = this->temps[2] = 0;
 }
 
